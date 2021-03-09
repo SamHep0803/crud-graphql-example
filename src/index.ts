@@ -4,6 +4,8 @@ import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { MessageResolver } from "./resolvers/MessageResolver";
 import { createConnection } from "typeorm";
+import { UserResolver } from "./resolvers/UserResolver";
+import session from "express-session";
 
 (async () => {
 	const app = express();
@@ -12,12 +14,21 @@ import { createConnection } from "typeorm";
 		res.send("hello");
 	});
 
+	app.use(
+		session({
+			secret: "thisisaverysecretsecret",
+			resave: false,
+			saveUninitialized: false,
+		})
+	);
+
 	await createConnection();
 
 	const apolloServer = new ApolloServer({
 		schema: await buildSchema({
-			resolvers: [MessageResolver],
+			resolvers: [MessageResolver, UserResolver],
 		}),
+		context: ({ req, res }: any) => ({ req, res }),
 	});
 
 	apolloServer.applyMiddleware({ app });

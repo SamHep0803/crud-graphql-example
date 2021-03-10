@@ -9,6 +9,17 @@ export class UserResolver {
 		return User.find();
 	}
 
+	@Query(() => Boolean)
+	logout(@Ctx() { req }: any) {
+		const userId = req.session.userId;
+		if (!userId) {
+			return false;
+		}
+
+		req.session.destroy();
+		return true;
+	}
+
 	@Query(() => User, { nullable: true })
 	me(@Ctx() { req }: any) {
 		const userId = req.session.userId;
@@ -45,7 +56,7 @@ export class UserResolver {
 		}
 	}
 
-	@Mutation(() => User)
+	@Mutation(() => User, { nullable: true })
 	async login(
 		@Arg("email") email: string,
 		@Arg("password") password: string,

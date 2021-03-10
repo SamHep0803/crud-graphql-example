@@ -6,21 +6,27 @@ import { MessageResolver } from "./resolvers/MessageResolver";
 import { createConnection } from "typeorm";
 import { UserResolver } from "./resolvers/UserResolver";
 import session from "express-session";
+import * as sqlite3 from "sqlite3";
 
 (async () => {
 	const app = express();
 
-	app.get("/", (_, res) => {
-		res.send("hello");
-	});
+	var SQLiteStore = require("connect-sqlite3")(session);
 
 	app.use(
 		session({
 			secret: "thisisaverysecretsecret",
 			resave: false,
 			saveUninitialized: false,
+			cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
+			store: new SQLiteStore(),
 		})
 	);
+
+	app.get("/", (req, res) => {
+		console.log(req.session);
+		res.send("hello");
+	});
 
 	await createConnection();
 

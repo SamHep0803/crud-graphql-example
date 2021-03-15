@@ -6,11 +6,14 @@ import { MessageResolver } from "./resolvers/MessageResolver";
 import { createConnection } from "typeorm";
 import { UserResolver } from "./resolvers/UserResolver";
 import session from "express-session";
+import cors from "cors";
 
 (async () => {
 	const app = express();
 
 	var FileStore = require("session-file-store")(session);
+
+	app.use(cors());
 
 	app.use(
 		session({

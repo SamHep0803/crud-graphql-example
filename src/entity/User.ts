@@ -19,7 +19,7 @@ export class User extends BaseEntity {
 	createdAt: Date;
 
 	@Field()
-	@Column()
+	@Column({ unique: true })
 	email: string;
 
 	@Column()

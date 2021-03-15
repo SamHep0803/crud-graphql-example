@@ -35,7 +35,7 @@ export class UserResolver {
 		return user;
 	}
 
-	@Mutation(() => User)
+	@Mutation(() => User, { nullable: true })
 	async register(
 		@Arg("email") email: string,
 		@Arg("password") password: string

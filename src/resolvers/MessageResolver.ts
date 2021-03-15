@@ -1,5 +1,5 @@
 import { Message } from "../entity/Message";
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 
 @Resolver()
 export class MessageResolver {
@@ -24,10 +24,14 @@ export class MessageResolver {
 		}
 	}
 
-	@Mutation(() => Message)
-	async createMessage(@Arg("content") content: string) {
+	@Mutation(() => Message, { nullable: true })
+	async createMessage(@Arg("content") content: string, @Ctx() { req }: any) {
 		try {
-			const message = await Message.create({ content });
+			const userId = req.session.userId;
+			if (!userId) {
+				return null;
+			}
+			const message = await Message.create({ content, authorId: userId });
 
 			await message.save();
 

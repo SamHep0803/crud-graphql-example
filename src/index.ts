@@ -6,12 +6,11 @@ import { MessageResolver } from "./resolvers/MessageResolver";
 import { createConnection } from "typeorm";
 import { UserResolver } from "./resolvers/UserResolver";
 import session from "express-session";
-import * as sqlite3 from "sqlite3";
 
 (async () => {
 	const app = express();
 
-	var SQLiteStore = require("connect-sqlite3")(session);
+	var FileStore = require("session-file-store")(session);
 
 	app.use(
 		session({
@@ -19,7 +18,7 @@ import * as sqlite3 from "sqlite3";
 			resave: false,
 			saveUninitialized: false,
 			cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
-			store: new SQLiteStore(),
+			store: new FileStore(),
 		})
 	);
 

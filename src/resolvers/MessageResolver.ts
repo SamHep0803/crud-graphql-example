@@ -61,7 +61,10 @@ export class MessageResolver {
 	}
 
 	@Mutation(() => Message, { nullable: true })
-	async updateMessage(@Arg("id") id: number, @Arg("content") content: string) {
+	async updateMessage(
+		@Arg("id") id: number,
+		@Arg("content", { nullable: true }) content: string
+	) {
 		try {
 			const message = await Message.findOne({ where: { id } });
 
@@ -69,7 +72,10 @@ export class MessageResolver {
 				return null;
 			}
 
-			message.content = content;
+			if (content) {
+				message.content = content;
+			}
+
 			message.updatedAt = new Date();
 
 			Message.update(id, message);

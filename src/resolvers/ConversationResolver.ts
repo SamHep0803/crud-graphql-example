@@ -57,6 +57,41 @@ export class ConversationResolver {
 			return conversation;
 		} catch (err) {
 			console.log(err);
+			return null;
+		}
+	}
+
+	@Mutation(() => Conversation, { nullable: true })
+	async updateConversation(
+		@Arg("id") id: number,
+		@Arg("userIds", { nullable: true }) userIds: [number],
+		@Arg("name", { nullable: true }) name: string,
+		@Ctx() { req }: any
+	) {
+		try {
+			const userId = req.session.userId;
+			if (!userId) {
+				return null;
+			}
+
+			const conversation = await Conversation.findOne({ where: { id } });
+			if (!conversation) {
+				return null;
+			}
+
+			if (userIds) {
+				conversation.userIds = userIds;
+			}
+
+			if (name) {
+				conversation.name = name;
+			}
+
+			Conversation.update(id, conversation);
+			return conversation;
+		} catch (err) {
+			console.log(err);
+			return null;
 		}
 	}
 
@@ -78,8 +113,10 @@ export class ConversationResolver {
 			}
 
 			await conversation.remove();
+			return true;
 		} catch (err) {
 			console.log(err);
+			return false;
 		}
 	}
 }

@@ -29,4 +29,8 @@ export class Message extends BaseEntity {
 	@Field()
 	@Column()
 	authorId: number;
+
+	@Field()
+	@Column()
+	conversation: number;
 }

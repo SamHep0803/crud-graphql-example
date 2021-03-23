@@ -76,4 +76,24 @@ export class UserResolver {
 
 		return user;
 	}
+
+	@Mutation(() => User, { nullable: true })
+	async addConversationToUser(
+		@Arg("conversation") conversation: number,
+		@Ctx() { req }: any
+	) {
+		const userId = req.session.userId;
+		if (!userId) {
+			return null;
+		}
+
+		const user = await User.findOne(userId);
+		if (!user) {
+			req.session.destroy();
+			return null;
+		}
+
+		user.conversations.push(conversation);
+		return user;
+	}
 }

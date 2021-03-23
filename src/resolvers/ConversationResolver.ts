@@ -10,7 +10,7 @@ export class ConversationResolver {
 	}
 
 	@Query(() => Conversation, { nullable: true })
-	async getConversation(@Arg("id") id: number) {
+	async conversation(@Arg("id") id: number) {
 		try {
 			const conversation = await Conversation.findOne({ where: { id } });
 
@@ -27,7 +27,7 @@ export class ConversationResolver {
 
 	@Mutation(() => Conversation, { nullable: true })
 	async createConversation(
-		@Arg("userIds") userIds: [number],
+		@Arg("users") users: [number],
 		@Arg("name", { nullable: true }) name: string,
 		@Ctx() { req }: any
 	) {
@@ -37,20 +37,20 @@ export class ConversationResolver {
 				return null;
 			}
 
-			if (userIds.length < 2) {
+			if (users.length < 2) {
 				return null;
 			}
 
-			let names: any[] = [];
-			if (userIds.length > 2 && name === "") {
-				userIds.forEach(async (id) => {
+			let names: string[] = [];
+			if (users.length > 2 && name === "") {
+				users.forEach(async (id) => {
 					const user = await User.findOne({ where: { id } });
-					names.push(user);
+					names.push(user!.name);
 				});
 				name = names.toString();
 			}
 
-			const conversation = await Conversation.create({ userIds, name });
+			const conversation = await Conversation.create({ users, name });
 
 			await conversation.save();
 
@@ -64,7 +64,7 @@ export class ConversationResolver {
 	@Mutation(() => Conversation, { nullable: true })
 	async updateConversation(
 		@Arg("id") id: number,
-		@Arg("userIds", { nullable: true }) userIds: [number],
+		@Arg("users", { nullable: true }) users: [number],
 		@Arg("name", { nullable: true }) name: string,
 		@Ctx() { req }: any
 	) {
@@ -79,8 +79,8 @@ export class ConversationResolver {
 				return null;
 			}
 
-			if (userIds) {
-				conversation.userIds = userIds;
+			if (users) {
+				conversation.users = users;
 			}
 
 			if (name) {
@@ -108,7 +108,7 @@ export class ConversationResolver {
 				return false;
 			}
 
-			if (!conversation.userIds.includes(userId)) {
+			if (!conversation.users.includes(userId)) {
 				return false;
 			}
 

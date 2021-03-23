@@ -25,13 +25,21 @@ export class MessageResolver {
 	}
 
 	@Mutation(() => Message, { nullable: true })
-	async createMessage(@Arg("content") content: string, @Ctx() { req }: any) {
+	async createMessage(
+		@Arg("content") content: string,
+		@Arg("conversation") conversation: number,
+		@Ctx() { req }: any
+	) {
 		try {
 			const userId = req.session.userId;
 			if (!userId) {
 				return null;
 			}
-			const message = await Message.create({ content, authorId: userId });
+			const message = await Message.create({
+				content,
+				authorId: userId,
+				conversation,
+			});
 
 			await message.save();
 

@@ -1,11 +1,5 @@
 import { Field, ObjectType } from "type-graphql";
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	PrimaryGeneratedColumn,
-} from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./User";
 
 @ObjectType()
@@ -15,13 +9,13 @@ export class Conversation extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Field()
+	@Field(() => [Number])
 	@Column("simple-array")
-	userIds: number[];
+	users: number[];
 
-	@Field()
+	@Field(() => [Number])
 	@Column("simple-array")
-	messageIds: number[];
+	messages: number[];
 
 	@Field()
 	@Column({ nullable: true })

@@ -28,4 +28,8 @@ export class User extends BaseEntity {
 
 	@Column()
 	password: string;
+
+	@Field(() => [Number], { nullable: true })
+	@Column("simple-array")
+	conversations: number[];
 }

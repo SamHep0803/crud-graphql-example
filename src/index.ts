@@ -34,6 +34,9 @@ import session from "express-session";
 			resolvers: [MessageResolver, UserResolver],
 		}),
 		context: ({ req, res }: any) => ({ req, res }),
+		subscriptions: {
+			path: "/subscriptions",
+		},
 	});
 
 	apolloServer.applyMiddleware({
